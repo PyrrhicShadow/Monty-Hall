@@ -8,10 +8,10 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField] int money = 1000; 
     [SerializeField] int bet; 
-    [SerializeField] int moneyDoor; 
+    [SerializeField] Door moneyDoor; 
     [SerializeField] int doorsOpened = 0;
     [Header("UI objects")]
-    [SerializeField] List<Button> doorButtons; 
+    [SerializeField] List<Door> doors; 
     [SerializeField] GameObject start;
     [SerializeField] TMP_Text instructionsText; 
     [SerializeField] TMP_Text scoreText; 
@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour {
         betText.text = bet.ToString(); 
         if (bet > 0 && bet <= money) {
             // randomly pick a door
-            moneyDoor = RandomDoor(); 
+            moneyDoor = RandomDoor(doors); 
             // ask user to pick a door 
             EnableDoors(); 
         }
@@ -42,54 +42,54 @@ public class GameManager : MonoBehaviour {
         start.SetActive(false); 
         instructionsText.text = "Pick a Door";
         instructionsText.gameObject.SetActive(true); 
-        foreach (Button b in doorButtons) {
-            b.enabled = true; 
+        foreach (Door b in doors) {
+            b.EnableButton(true); 
         }
     }
 
-    int RandomDoor() {
-        return Random.Range(0, doorButtons.Count); 
+    Door RandomDoor(List<Door> doors) {
+        int randNum = Random.Range(0, doors.Count); 
+        return doors[randNum]; 
     }
 
     public void PickDoor(int num) {
         // doorButtons[num]
-        if (num == moneyDoor) { 
+        if (doors[num] == moneyDoor) { 
             WinGame(); 
         }
         else {
             // open a door that isn't the money
-            List<Button> dealDoors = new List<Button>(); 
-            for (int i = 0; i < doorButtons.Count; i++) {
-                if (!(i == num || i == moneyDoor)) {
-                    dealDoors.Add(doorButtons[i]);
+            List<Door> dealDoors = new List<Door>(); 
+            for (int i = 0; i < doors.Count; i++) {
+                if (!(dealDoors[i].Selected() || dealDoors[i].Prize())) {
+                    dealDoors.Add(doors[i]);
                 }
             }
             if (dealDoors.Count > 0) {
-                OpenDoor(Random.Range(0, dealDoors.Count));
-                doorButtons[num].enabled = true; 
+                int other = Random.Range(0, dealDoors.Count); 
+                OpenDoor(dealDoors[other]);
+                doors[num].enabled = true; 
 
                 instructionsText.text = "Stay with door number " + (num + 1).ToString() + " or change doors.";
             }
 
-            if (doorsOpened >= doorButtons.Count) {
+            if (doorsOpened >= doors.Count) {
                 LoseGame(); 
             }
         }
     }
 
-    void OpenDoor(int num) {
+    void OpenDoor(Door unveil) {
         doorsOpened++; 
-        GameObject unveil = doorButtons[num].gameObject; 
-        if (num == moneyDoor) {
+        bool prize = unveil.Open(); 
+        if (prize) {
             // money picture
-            Debug.Log("Money at door " + (num + 1) + "!!!");
+            Debug.Log("Money at door " + (unveil.identifier) + "!!!");
         }
         else {
             // goat picture
-            Debug.Log("Goat at door " + (num + 1) + ":(");
+            Debug.Log("Goat at door " + (unveil.identifier) + ":(");
         }
-        doorButtons[num].gameObject.SetActive(false);
-        // doorButtons.RemoveAt(num); 
     }
 
     void WinGame() {
@@ -107,9 +107,8 @@ public class GameManager : MonoBehaviour {
     }
 
     void NewGame() {
-        foreach (Button b in doorButtons) {
-            b.enabled = false; 
-            b.gameObject.SetActive(true);
+        foreach (Door b in doors) {
+            b.Reset(); 
         }
         start.SetActive(true); 
         scoreText.text = "Balance: " + money; 
