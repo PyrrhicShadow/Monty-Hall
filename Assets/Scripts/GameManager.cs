@@ -20,11 +20,7 @@ public class GameManager : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         NewGame(); 
-    }
-
-    // Update is called once per frame
-    void Update() {
-        
+        instructionsText.gameObject.SetActive(false);
     }
 
     public void StartGame() {
@@ -35,15 +31,16 @@ public class GameManager : MonoBehaviour {
             // randomly pick a door
             moneyDoor = RandomDoor(); 
             // ask user to pick a door 
-            EnableDoor(); 
+            EnableDoors(); 
         }
         else {
             Debug.Log("Bet must be greater than 0 and no more than " + money + ".");
         }
     }
 
-    void EnableDoor() {
+    void EnableDoors() {
         start.SetActive(false); 
+        instructionsText.text = "Pick a Door";
         instructionsText.gameObject.SetActive(true); 
         foreach (Button b in doorButtons) {
             b.enabled = true; 
@@ -55,7 +52,7 @@ public class GameManager : MonoBehaviour {
     }
 
     public void PickDoor(int num) {
-        OpenDoor(num); 
+        // doorButtons[num]
         if (num == moneyDoor) { 
             WinGame(); 
         }
@@ -91,7 +88,7 @@ public class GameManager : MonoBehaviour {
             // goat picture
             Debug.Log("Goat at door " + (num + 1) + ":(");
         }
-        doorButtons[num].enabled = false; 
+        doorButtons[num].gameObject.SetActive(false);
         // doorButtons.RemoveAt(num); 
     }
 
@@ -103,8 +100,8 @@ public class GameManager : MonoBehaviour {
     }
 
     void LoseGame() {
-        instructionsText.text = "You Lose :( +" + bet.ToString(); 
-        Debug.Log("You Lose :( +" + bet); 
+        instructionsText.text = "You Lose :( -" + bet.ToString(); 
+        Debug.Log("You Lose :( -" + bet); 
         money -= bet;
         NewGame(); 
     }
@@ -112,11 +109,11 @@ public class GameManager : MonoBehaviour {
     void NewGame() {
         foreach (Button b in doorButtons) {
             b.enabled = false; 
+            b.gameObject.SetActive(true);
         }
         start.SetActive(true); 
-        instructionsText.gameObject.SetActive(false);
-        instructionsText.text = "Pick a Door";
         scoreText.text = "Balance: " + money; 
         betText.text = string.Empty; 
+        doorsOpened = 0; 
     }
 }

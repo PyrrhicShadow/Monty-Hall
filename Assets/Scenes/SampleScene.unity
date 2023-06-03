@@ -195,8 +195,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -256,7 +256,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -33}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 700, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &53636808
 GameObject:
@@ -1520,14 +1520,15 @@ MonoBehaviour:
   money: 1000
   bet: 0
   moneyDoor: 0
+  doorsOpened: 0
   doorButtons:
   - {fileID: 2064310564}
   - {fileID: 2051887787}
   - {fileID: 1053087118}
   start: {fileID: 1320162228}
   instructionsText: {fileID: 7713035}
-  scoreText: {fileID: 0}
-  betText: {fileID: 0}
+  scoreText: {fileID: 1505534274}
+  betText: {fileID: 53636810}
 --- !u!4 &1634572997
 Transform:
   m_ObjectHideFlags: 0
